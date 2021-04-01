@@ -30,7 +30,7 @@ const LoginForm = ({ currentUser, setCurrentUser, setMessage,
                 localStorage.setItem('token', response.token)
 
                 //////// Admin check //////////////////////////////////////////////
-                localStorage.setItem('accessLevelId', response.accessLevelId)
+                localStorage.setItem('accesslevelId', response.accesslevelId)
                 ///////////////////////////////////////////////////////////////////
 
                 // Asetetaan käyttäjänimi currentUser -stateen, jota säilytetään App.js:ssä

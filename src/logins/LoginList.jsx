@@ -14,7 +14,18 @@ const LoginList = () => {
     const [isPositive, setIsPositive] = useState(false)
     const [message, setMessage] = useState('')
 
+    ////////////// ADMIN TILATIETO ////////////////////////////
+    const [admin, setAdmin] = useState(true)
+
     useEffect(() => {
+        ////ADMIN TARKISTUS LOCAL STORAGESTA JA ASETUS STATEEN/////////
+        const accesslevelId = localStorage.getItem('accesslevelId')
+        if (accesslevelId == 1) {
+            setAdmin(true)
+        }
+        else {
+            setAdmin(false)
+        }
         LoginService
             .getAll()
             .then(data => {
@@ -22,10 +33,6 @@ const LoginList = () => {
             })
     }, [lisäysTila])
 
-    //////////////ADMIN CHECK///////////////////////////////
-    const currentUser = localStorage.getItem('user')
-
-    ///////////////////////////////////////////////////////
 
     // Tämä ajetaan kun ollaan poistamassa käyttäjää
     const handleDeleteClick = id => {
@@ -82,11 +89,18 @@ const LoginList = () => {
         }
     }
 
+    //________________________________________________________________
+
     // RETURN ON AINA SE OSA JOKA RENDERÖIDÄÄN RUUDULLE
     // Tässä on käytetty osittain vähän erilaisia ehtolauserakenteita kuin Customereissa
 
-    // Jos logineja ei ole ehtinyt tulla kannasta stateen
-    if (!lisäysTila && logins.length === 0) {
+    //////Jos ei ole adminkäyttäjä tulee aina tämä näkymä////////////
+    if (!admin) {
+        return (<h2>Sorry, this page is for admin users only</h2>)
+    }
+
+    // Jos logineja ei ole ehtinyt tulla kannasta stateen, mutta on adminkäyttäjä
+    if (!lisäysTila && admin && logins.length === 0) {
         return (<>
             <h1><nobr> Logins</nobr>
 
@@ -98,8 +112,8 @@ const LoginList = () => {
         </>)
     }
 
-    // Jos statessa on jo kannasta saapuneet loginit ja lisäystilakin on pois päältä
-    if (!lisäysTila && logins) {
+    // Jos kirjautuneena on adminkäyttäjä ja statessa on jo kannasta saapuneet loginit ja lisäystilakin on pois päältä
+    if (!lisäysTila && admin && logins) {
         return (
             <>
                 <h1><nobr> Logins</nobr>
@@ -131,7 +145,7 @@ const LoginList = () => {
         )
     }
 
-    if (lisäysTila) {
+    if (lisäysTila && admin) {
         return (<>
             <h1>Logins</h1>
             { showMessage &&
